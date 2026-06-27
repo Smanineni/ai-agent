@@ -1,0 +1,35 @@
+# ── Secrets ───────────────────────────────────
+.env
+
+# ── Virtual environment ───────────────────────
+venv/
+.venv/
+
+# ── Python cache ──────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ── ChromaDB persisted data ───────────────────
+data/chroma/
+
+# ── SQLite database file ──────────────────────
+data/db/*.db
+
+# ── Streamlit cache ───────────────────────────
+.streamlit/
+
+# ── IDE ───────────────────────────────────────
+.vscode/
+.idea/
+
+# ── OS ────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Test / coverage ───────────────────────────
+.pytest_cache/
+htmlcov/
+.coverage

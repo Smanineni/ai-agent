@@ -1,0 +1,39 @@
+# ─────────────────────────────────────────────
+# Hybrid AI Agent — Python Dependencies
+# ─────────────────────────────────────────────
+
+# ── Core LLM & Orchestration ──────────────────
+openai==1.35.3                  # OpenAI GPT-4o + Embeddings API
+langchain==0.2.6                # Main LangChain framework
+langchain-openai==0.1.13        # LangChain ↔ OpenAI integration
+langchain-community==0.2.6      # Community tools (SQLDatabase, ChromaDB, etc.)
+langchain-core==0.2.10          # LangChain base abstractions
+
+# ── Structured DB (SQLite) ────────────────────
+sqlalchemy==2.0.31              # ORM used by LangChain's SQLDatabase tool
+
+# ── Vector Store (ChromaDB) ──────────────────
+chromadb==0.5.3                 # Local vector database
+sentence-transformers==3.0.1    # Used internally by ChromaDB for fallback embeddings
+
+# ── Reranker ─────────────────────────────────
+FlagEmbedding==1.2.10           # BGE-Reranker (cross-encoder reranking)
+
+# ── Document Loading & Parsing ───────────────
+pypdf==4.2.0                    # PDF loader
+python-docx==1.1.2              # DOCX loader
+unstructured==0.14.8            # Generic document parser (HTML, TXT, etc.)
+
+# ── App UI ────────────────────────────────────
+streamlit==1.36.0               # Chat UI + admin panel
+
+# ── Utilities ────────────────────────────────
+python-dotenv==1.0.1            # Load .env file into os.environ
+pydantic==2.8.0                 # Data validation (used throughout LangChain)
+tiktoken==0.7.0                 # Token counting for OpenAI models
+tenacity==8.4.1                 # Retry logic for API calls
+loguru==0.7.2                   # Better logging
+
+# ── Testing ───────────────────────────────────
+pytest==8.2.2                   # Unit test runner
+pytest-asyncio==0.23.7          # Async test support
