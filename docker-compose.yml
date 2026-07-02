@@ -1,0 +1,84 @@
+# =============================================================================
+# Hybrid AI Agent — Docker Compose
+# =============================================================================
+#
+# USAGE:
+#   docker compose up --build        first run  (builds the image)
+#   docker compose up                subsequent (uses cached image)
+#   docker compose down              stop and remove containers
+#   docker compose down -v           also removes named volumes
+#   docker compose logs -f app       follow live logs
+#
+# =============================================================================
+
+services:
+
+  # ── Streamlit App ────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: hybrid-ai-agent
+
+    # Map host port 8501 → container port 8501
+    # Browse to http://localhost:8501 after `docker compose up`
+    ports:
+      - "8501:8501"
+
+    # ── Volumes ────────────────────────────────────────────────────────────────
+    # These bind-mount host directories into the container at runtime.
+    # Data written here survives `docker compose down` and restarts.
+    #
+    # data/db      → SQLite company.db (employees, projects, assignments, feedback)
+    # data/chroma  → ChromaDB vector store (embedded HR document chunks)
+    #
+    # Without these mounts, the database and embeddings would be recreated from
+    # scratch on every container restart.
+    volumes:
+      - ./data/db:/app/data/db
+      - ./data/chroma:/app/data/chroma
+
+    # ── Environment variables ──────────────────────────────────────────────────
+    # Load from the .env file on the host.  The .env file is NEVER copied into
+    # the image (see .dockerignore) — it is mounted at runtime only.
+    # This means API keys stay on the host machine, not in the container image.
+    env_file:
+      - .env
+
+    # ── Restart policy ─────────────────────────────────────────────────────────
+    # "unless-stopped": restart automatically on crash or reboot, but respect
+    # an explicit `docker compose stop`.
+    restart: unless-stopped
+
+    # ── Healthcheck override ───────────────────────────────────────────────────
+    # Inherited from Dockerfile HEALTHCHECK. Uncomment to override timing here.
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+
+# =============================================================================
+# Extension points (uncomment when adding services):
+#
+#   postgres:          # swap SQLite for PostgreSQL in production
+#     image: postgres:16-alpine
+#     environment:
+#       POSTGRES_DB: company
+#       POSTGRES_USER: agent
+#       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data
+#
+#   ollama:            # run local Ollama models in Docker too
+#     image: ollama/ollama
+#     ports:
+#       - "11434:11434"
+#     volumes:
+#       - ollama_models:/root/.ollama
+#
+# volumes:
+#   pgdata:
+#   ollama_models:
+# =============================================================================
