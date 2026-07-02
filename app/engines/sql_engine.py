@@ -153,6 +153,55 @@ def validate_sql(sql: str) -> str:
     return sql
 
 
+def _extract_sql(raw: str) -> str:
+    """
+    Extracts the first bare SQL statement from LLM output.
+
+    Different LLMs format their SQL output differently:
+      - GPT-4o:   Returns just the SQL string
+      - Llama 3:  Returns "Question: ... SQLQuery: SELECT ..."
+                  Sometimes returns multiple SQLQuery blocks with commentary —
+                  we always take the FIRST one only.
+      - Mixtral:  Sometimes wraps in ```sql ... ``` markdown fences
+
+    Strategy:
+      1. If "SQLQuery:" marker exists, take content after the FIRST one
+      2. Strip any markdown code fences
+      3. Take only up to the first semicolon (end of first statement)
+      4. If no marker, find the first SELECT/WITH keyword
+    """
+    text = raw.strip()
+
+    # Step 1: Find the FIRST "SQLQuery:" label (Llama 3 style)
+    sql_query_marker = re.search(r"SQLQuery\s*:\s*", text, re.IGNORECASE)
+    if sql_query_marker:
+        text = text[sql_query_marker.end():].strip()
+
+    # Step 2: Strip markdown code fences  ```sql ... ``` or ``` ... ```
+    if text.startswith("```"):
+        lines = text.split("\n")
+        # Remove first line (```sql or ```) and find closing ```
+        inner_lines = []
+        for line in lines[1:]:
+            if line.strip().startswith("```"):
+                break
+            inner_lines.append(line)
+        text = "\n".join(inner_lines).strip()
+
+    # Step 3: Find the first SELECT or WITH keyword and take from there
+    match = re.search(r"\b(SELECT|WITH)\b", text, re.IGNORECASE)
+    if match:
+        text = text[match.start():]
+
+    # Step 4: Cut off at the first semicolon — SQLite cannot run multiple
+    # statements at once. Take only the first complete statement.
+    semicolon_pos = text.find(";")
+    if semicolon_pos != -1:
+        text = text[:semicolon_pos].strip()
+
+    return text.strip()
+
+
 # ═══════════════════════════════════════════════════════════════════
 # PART 3: Answer synthesis prompt
 # ═══════════════════════════════════════════════════════════════════
@@ -218,6 +267,12 @@ def run_sql_query(question: str) -> dict:
         sql_chain = create_sql_query_chain(llm, db)
         generated_sql = sql_chain.invoke({"question": question})
         logger.debug(f"Generated SQL (raw): {generated_sql}")
+
+        # ── Step 2b: Extract bare SQL from LLM output ─────────────
+        # Groq/Llama3 returns "Question: ... SQLQuery: SELECT ..."
+        # GPT-4o returns just the SQL. _extract_sql() normalises both.
+        generated_sql = _extract_sql(generated_sql)
+        logger.debug(f"Generated SQL (extracted): {generated_sql}")
 
         # ── Step 3: Validate the SQL (safety check) ───────────────
         clean_sql = validate_sql(generated_sql)

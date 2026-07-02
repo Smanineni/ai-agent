@@ -1,0 +1,53 @@
+# =============================================================================
+# .dockerignore — files NOT copied into the Docker image
+# =============================================================================
+#
+# Docker's COPY . . copies the entire build context into the image unless
+# these files are excluded.  Excluding them:
+#   1. Keeps the image small (no venv/ = saves ~1 GB)
+#   2. Keeps secrets out of the image (.env = API keys never baked in)
+#   3. Speeds up builds (no large irrelevant data)
+# =============================================================================
+
+# Python virtual environment — pip install inside the image handles this
+venv/
+.venv/
+env/
+
+# Python cache — not needed, wasteful
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Secrets — NEVER bake these into the image
+.env
+*.key
+*.pem
+
+# Data — mounted as volumes at runtime (see docker-compose.yml)
+# The container gets live data from the host filesystem, not a stale copy
+data/db/
+data/chroma/
+
+# Git history — not needed at runtime
+.git/
+.gitignore
+.gitattributes
+
+# IDE & OS noise
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Test output — not needed in production image
+.pytest_cache/
+htmlcov/
+.coverage
+tests/
+
+# Documentation
+*.md
+docs/
