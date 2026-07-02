@@ -1,4 +1,4 @@
-# Hybrid AI Agent — Complete Learning Guide
+# NexusAI — Complete Learning Guide
 
 > This README is your personal reference document.
 > Every file, every concept, every line, explained step by step.
@@ -28,7 +28,7 @@
 
 ## 1. What Are We Building?
 
-A **Hybrid AI Agent** is a system that answers natural language questions
+**NexusAI** is an enterprise knowledge and data query platform that answers natural language questions
 across two types of data at the same time:
 
 | Data Type | Example Question | How Answered |
@@ -98,7 +98,7 @@ You type a question
 ## 3. Project Folder Structure
 
 ```
-hybrid-ai-agent/
+nexus-ai/
 │
 ├── app/                        ← All application code lives here
 │   ├── __init__.py             ← Marks 'app' as a Python package
@@ -980,7 +980,7 @@ code. They usually test four things:
 
 ---
 
-**Q3. Explain the architecture of your hybrid AI agent.**
+**Q3. Explain the architecture of NexusAI.**
 
 > **Answer (walk through the diagram):**
 > The system has 6 layers:

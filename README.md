@@ -1,4 +1,4 @@
-# Hybrid AI Agent — Enterprise NL Query System
+# NexusAI — Enterprise Knowledge & Data Query Platform
 
 A production-grade agentic AI system that answers natural language questions over both structured (SQL) and unstructured (document) enterprise data. Built with LangChain, ChromaDB, SQLite, and Streamlit. Deployable via Docker.
 
