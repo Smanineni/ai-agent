@@ -281,7 +281,6 @@ Running `docker compose down` stops the container but **does not delete your dat
 **Srinivasulu Manineni** — Tech Lead / Solution Architect transitioning to Agentic AI Engineering.  
 15 years of Java / Spring / Kafka / Angular / NICE Actimize. Now building AI systems that sit on top of enterprise data.
 
-- GitHub: [github.com/srinivasulu-mani](https://github.com/srinivasulu-manineni)
 - LinkedIn: [linkedin.com/in/smanineni](https://linkedin.com/in/smanineni)
 
 ---
